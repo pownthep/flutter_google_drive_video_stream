@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "92663000944",
+    "firebase_url": "https://norse-rampart-284707.firebaseio.com",
+    "project_id": "norse-rampart-284707",
+    "storage_bucket": "norse-rampart-284707.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:92663000944:android:cdd769eba4e15ac9c169b5",
+        "android_client_info": {
+          "package_name": "com.pownthep.google_drive_video_stream"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "92663000944-3i19osiq4us85u36mc0e22abj7oqgii8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.pownthep.google_drive_video_stream",
+            "certificate_hash": "453b0b282a24619aac313ba0156590d65733df0d"
+          }
+        },
+        {
+          "client_id": "92663000944-ghhnsgp4fckil2cr0kc57q7n21tte1hv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCslvngpK63bGC4mw0r7S_oRr3e_TZ-dvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "92663000944-ghhnsgp4fckil2cr0kc57q7n21tte1hv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
