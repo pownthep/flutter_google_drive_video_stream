@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import './server.dart';
 import 'login_page.dart';
+import 'package:path_provider/path_provider.dart';
 
-void main() {
+String dir;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  dir = (await getApplicationDocumentsDirectory()).path;
   startServer();
   runApp(MyApp());
 }

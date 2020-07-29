@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:network_to_file_image/network_to_file_image.dart';
+import 'dart:io';
+import 'package:path/path.dart' as p;
+import './main.dart';
 
 class FilesGridView extends StatefulWidget {
   var _files;
@@ -12,6 +16,11 @@ class FilesGridView extends StatefulWidget {
 
 class _FilesGridViewState extends State<FilesGridView> {
   ScrollController _scrollController = new ScrollController();
+
+  File fileFromDocsDir(String filename) {
+    String pathName = p.join(dir, filename);
+    return File(pathName);
+  }
 
   @override
   void initState() {
@@ -46,7 +55,8 @@ class _FilesGridViewState extends State<FilesGridView> {
             children: <Widget>[
               Container(
                 child: Image(
-                  image: CachedNetworkImageProvider(url),
+                  image: NetworkToFileImage(
+                      url: url, file: fileFromDocsDir(item["id"])),
                   fit: BoxFit.cover,
                 ),
                 height: 200,
