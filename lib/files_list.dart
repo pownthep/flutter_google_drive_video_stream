@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './drive.dart';
 import 'files_grid_view.dart';
+import 'package:flutter/services.dart';
 
 class FilesListwidget extends StatefulWidget {
   @override
@@ -13,6 +14,9 @@ class _FilesListwidgetState extends State<FilesListwidget> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     _filesList = getDriveVideos("");
   }
 
@@ -20,6 +24,17 @@ class _FilesListwidgetState extends State<FilesListwidget> {
     setState(() {
       _filesList = getDriveVideos(value);
     });
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
   }
 
   @override

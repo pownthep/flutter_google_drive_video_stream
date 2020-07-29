@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import './main.dart';
+import './video_player_vlc.dart';
+import './webview_player.dart';
 
 class FilesGridView extends StatefulWidget {
-  var _files;
-  String _nextPageToken;
+  final _files;
+  final String _nextPageToken;
   FilesGridView(this._files, this._nextPageToken);
 
   @override
@@ -51,26 +52,36 @@ class _FilesGridViewState extends State<FilesGridView> {
         return Container(
           height: 250,
           width: _width,
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Image(
-                  image: NetworkToFileImage(
-                      url: url, file: fileFromDocsDir(item["id"])),
-                  fit: BoxFit.cover,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WebViewExample(
+                        'http://192.168.1.17:4040?id=${item["id"]}&size=${item["size"]}')),
+              );
+            },
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Image(
+                    image: NetworkToFileImage(
+                        url: url, file: fileFromDocsDir(item["id"])),
+                    fit: BoxFit.cover,
+                  ),
+                  height: 200,
+                  width: _width,
+                  color: Colors.black12,
                 ),
-                height: 200,
-                width: _width,
-                color: Colors.black12,
-              ),
-              Container(
-                height: 50,
-                width: _width,
-                child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(item["name"])),
-              )
-            ],
+                Container(
+                  height: 50,
+                  width: _width,
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(item["name"])),
+                )
+              ],
+            ),
           ),
         );
       },
