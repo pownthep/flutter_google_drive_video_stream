@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_drive_video_stream/sign_in.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import './drive.dart';
 import 'files_grid_view.dart';
@@ -16,6 +17,8 @@ class _FilesListwidgetState extends State<FilesListwidget> {
   Future _filesList;
   TextEditingController _controller = TextEditingController();
   String _searchText;
+  final textFieldFocusNode = FocusNode();
+
   var box = Hive.box(darkModeBox);
   @override
   void initState() {
@@ -63,6 +66,7 @@ class _FilesListwidgetState extends State<FilesListwidget> {
                 elevation: 2,
                 child: TextFormField(
                   onFieldSubmitted: _handleSubmitted,
+                  focusNode: textFieldFocusNode,
                   onChanged: (v) {
                     setState(() {
                       _searchText = v;
@@ -73,12 +77,27 @@ class _FilesListwidgetState extends State<FilesListwidget> {
                       border: InputBorder.none,
                       prefixIcon: Icon(Icons.search),
                       contentPadding: EdgeInsets.only(top: 16),
-                      suffixIcon: IconButton(
-                        icon: _searchText.length > 0
-                            ? Icon(Icons.clear)
-                            : Icon(MdiIcons.googleDrive),
-                        onPressed: () {
-                          _controller.clear();
+                      suffixIcon: GestureDetector(
+                        child: IconButton(
+                            icon: _searchText.length > 0
+                                ? Icon(Icons.clear)
+                                : Icon(MdiIcons.googleDrive),
+                            onPressed: null),
+                        onTap: () async {
+                          textFieldFocusNode.unfocus();
+                          textFieldFocusNode.canRequestFocus = false;
+                          if (_searchText.length > 0) {
+                            _controller.clear();
+                            setState(() {
+                              _searchText = "";
+                            });
+                          } else {
+                            signOutGoogle();
+                            token = await signInWithGoogle();
+                            setState(() {
+                              _filesList = getDriveVideos("");
+                            });
+                          }
                         },
                       ),
                       hintText: 'Search Drive'),
@@ -89,7 +108,7 @@ class _FilesListwidgetState extends State<FilesListwidget> {
                 child: FutureBuilder(
               future: _filesList,
               builder: (context, snapshot) {
-                if (snapshot.hasData) {
+                if (snapshot.connectionState == ConnectionState.done) {
                   return FilesGridView(
                       snapshot.data["files"], snapshot.data["nextPageToken"]);
                 } else if (snapshot.hasError) {
