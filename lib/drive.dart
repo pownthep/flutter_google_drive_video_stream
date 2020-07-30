@@ -14,8 +14,8 @@ Future<dynamic> getDriveVideos(String text) async {
     token = await signInWithGoogle();
   }
   String url = text.length == 0
-      ? 'https://www.googleapis.com/drive/v3/files?&pageSize=1000&q=mimeType="video/mp4"&fields=nextPageToken,files(name,id,size,hasThumbnail,thumbnailLink,iconLink)'
-      : 'https://www.googleapis.com/drive/v3/files?&pageSize=1000&q=mimeType="video/mp4"%20and%20name%20contains%20"$text"&fields=nextPageToken,files(name,id,size,hasThumbnail,thumbnailLink,iconLink)';
+      ? 'https://www.googleapis.com/drive/v3/files?orderBy=recency%20desc&pageSize=100&q=mimeType%20contains%20"video"&fields=nextPageToken,files(name,id,size,hasThumbnail,thumbnailLink,iconLink,owners(displayName,photoLink))'
+      : 'https://www.googleapis.com/drive/v3/files?orderBy=recency%20desc&q=mimeType%20contains%20"video"%20and%20name%20contains%20"$text"&fields=nextPageToken,files(name,id,size,hasThumbnail,thumbnailLink,iconLink,owners(displayName,photoLink))';
   Response res = await get(url, headers: {
     'Authorization': 'Bearer $token',
     'Accept': 'application/json'

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import './drive.dart';
 import 'files_grid_view.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import './main.dart';
 
 class FilesListwidget extends StatefulWidget {
   @override
@@ -10,7 +14,9 @@ class FilesListwidget extends StatefulWidget {
 
 class _FilesListwidgetState extends State<FilesListwidget> {
   Future _filesList;
-
+  TextEditingController _controller = TextEditingController();
+  String _searchText;
+  var box = Hive.box(darkModeBox);
   @override
   void initState() {
     super.initState();
@@ -18,6 +24,7 @@ class _FilesListwidgetState extends State<FilesListwidget> {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     _filesList = getDriveVideos("");
+    _searchText = "";
   }
 
   void _handleSubmitted(String value) {
@@ -40,69 +47,77 @@ class _FilesListwidgetState extends State<FilesListwidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            var darkMode = box.get('darkMode', defaultValue: false);
+            box.put('darkMode', !darkMode);
+          },
+          child: Icon(MdiIcons.themeLightDark),
+        ),
         body: SafeArea(
             child: Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextFormField(
-            onFieldSubmitted: _handleSubmitted,
-            decoration: InputDecoration(
-                border: InputBorder.none, hintText: 'Enter a search term'),
-          ),
-        ),
-        Expanded(
-            child: FutureBuilder(
-          future: _filesList,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return FilesGridView(
-                  snapshot.data["files"], snapshot.data["nextPageToken"]);
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Icon(Icons.error),
-              );
-            } else {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      child: CircularProgressIndicator(),
-                      width: 60,
-                      height: 60,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text('Awaiting result...'),
-                    )
-                  ],
-                ),
-              );
-            }
-          },
-        ))
-      ],
-    )));
-  }
-}
-
-class Detail extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
           children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.of(context).pop(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Material(
+                elevation: 2,
+                child: TextFormField(
+                  onFieldSubmitted: _handleSubmitted,
+                  onChanged: (v) {
+                    setState(() {
+                      _searchText = v;
+                    });
+                  },
+                  controller: _controller,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      prefixIcon: Icon(Icons.search),
+                      contentPadding: EdgeInsets.only(top: 16),
+                      suffixIcon: IconButton(
+                        icon: _searchText.length > 0
+                            ? Icon(Icons.clear)
+                            : Icon(MdiIcons.googleDrive),
+                        onPressed: () {
+                          _controller.clear();
+                        },
+                      ),
+                      hintText: 'Search Drive'),
+                ),
+              ),
             ),
-            Text("Detail"),
+            Expanded(
+                child: FutureBuilder(
+              future: _filesList,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return FilesGridView(
+                      snapshot.data["files"], snapshot.data["nextPageToken"]);
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Icon(Icons.error),
+                  );
+                } else {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                          child: CircularProgressIndicator(),
+                          width: 60,
+                          height: 60,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16),
+                          child: Text('Awaiting result...'),
+                        )
+                      ],
+                    ),
+                  );
+                }
+              },
+            )),
           ],
-        ),
-      ),
-    );
+        )));
   }
 }

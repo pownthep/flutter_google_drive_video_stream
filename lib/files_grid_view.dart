@@ -3,8 +3,10 @@ import 'package:network_to_file_image/network_to_file_image.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import './main.dart';
-import './video_player_vlc.dart';
 import './webview_player.dart';
+import 'package:mx_player_plugin/mx_player_plugin.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:filesize/filesize.dart';
 
 class FilesGridView extends StatefulWidget {
   final _files;
@@ -50,7 +52,7 @@ class _FilesGridViewState extends State<FilesGridView> {
             ? item["thumbnailLink"].toString().replaceFirst("=s220", "")
             : 'https://drive-thirdparty.googleusercontent.com/256/type/video/x-matroska';
         return Container(
-          height: 250,
+          height: 270,
           width: _width,
           child: GestureDetector(
             onTap: () {
@@ -74,11 +76,64 @@ class _FilesGridViewState extends State<FilesGridView> {
                   color: Colors.black12,
                 ),
                 Container(
-                  height: 50,
+                  height: 70,
                   width: _width,
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(item["name"])),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          item["owners"][0]["photoLink"] != null
+                              ? CircleAvatar(
+                                  backgroundImage: NetworkImage(item["owners"]
+                                          [0]["photoLink"]
+                                      .toString()),
+                                )
+                              : CircleAvatar(
+                                  backgroundColor: Colors.brown.shade800,
+                                  child: Text(item["owners"][0]["displayName"]
+                                      .toString()[0]),
+                                ),
+                          Container(
+                              width: _width * 0.5,
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(top: 10),
+                                    height: 30,
+                                    width: _width * 0.5,
+                                    child: Text(
+                                      item["name"],
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 10,
+                                    width: _width * 0.5,
+                                    child: Text(
+                                      item["owners"][0]["displayName"] +
+                                          " - " +
+                                          filesize(int.parse(item["size"])),
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                  )
+                                ],
+                              )),
+                          IconButton(
+                            icon: Icon(
+                              MdiIcons.vlc,
+                              color: Colors.orange,
+                            ),
+                            onPressed: () async {
+                              await PlayerPlugin.openWithVlcPlayer(
+                                  'http://192.168.1.17:4040?id=${item["id"]}&size=${item["size"]}');
+                            },
+                          ),
+                          Divider()
+                        ],
+                      )),
                 )
               ],
             ),
