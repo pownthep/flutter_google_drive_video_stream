@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_drive_video_stream/video_player.dart';
 import 'package:network_to_file_image/network_to_file_image.dart';
 import 'dart:io';
 import 'package:path/path.dart' as p;
@@ -75,7 +76,7 @@ class _FilesGridViewState extends State<FilesGridView> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => WebViewExample(
+                                    builder: (context) => ExampleVideo(
                                         'http://192.168.1.17:4040?id=${item["id"]}&size=${item["size"]}')),
                               );
                             }),
@@ -104,13 +105,13 @@ class _FilesGridViewState extends State<FilesGridView> {
                                             .toString()[0]),
                                       ),
                                 Container(
-                                    width: _width * 0.5,
+                                    width: _width * 0.8,
                                     child: Column(
                                       children: <Widget>[
                                         Container(
                                           padding: EdgeInsets.only(top: 10),
                                           height: 30,
-                                          width: _width * 0.5,
+                                          width: _width * 0.8,
                                           child: Text(
                                             item["name"],
                                             overflow: TextOverflow.ellipsis,
@@ -120,7 +121,7 @@ class _FilesGridViewState extends State<FilesGridView> {
                                         ),
                                         Container(
                                           height: 10,
-                                          width: _width * 0.5,
+                                          width: _width * 0.8,
                                           child: Text(
                                             item["owners"][0]["displayName"] +
                                                 " - " +
@@ -131,16 +132,6 @@ class _FilesGridViewState extends State<FilesGridView> {
                                         )
                                       ],
                                     )),
-                                IconButton(
-                                  icon: Icon(
-                                    MdiIcons.vlc,
-                                    color: Colors.orange,
-                                  ),
-                                  onPressed: () async {
-                                    await PlayerPlugin.openWithVlcPlayer(
-                                        'http://192.168.1.17:4040?id=${item["id"]}&size=${item["size"]}');
-                                  },
-                                ),
                                 Divider()
                               ],
                             )),
