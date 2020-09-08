@@ -77,7 +77,9 @@ class _FilesGridViewState extends State<FilesGridView> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => ExampleVideo(
-                                        'http://192.168.1.17:4040?id=${item["id"]}&size=${item["size"]}')),
+                                        'https://www.googleapis.com/drive/v3/files/' +
+                                            item["id"] +
+                                            '?alt=media&key=AIzaSyAv1WgLGclLIlhKvzIiIVOiqZqDA0EM9TI')),
                               );
                             }),
                         height: 200,

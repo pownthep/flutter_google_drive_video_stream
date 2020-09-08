@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import './server.dart';
 import 'login_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:hive/hive.dart';
@@ -13,7 +12,6 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox(darkModeBox);
   dir = (await getApplicationDocumentsDirectory()).path;
-  startServer();
   runApp(MyApp());
 }
 
